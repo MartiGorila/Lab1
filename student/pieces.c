@@ -1,7 +1,13 @@
 #include "pieces.h"
 
 void init_piece(Piece *p){
-	// ToDo in LAB 1
+	p->rows = 0; p->cols = 0;
+    for(int i=0; i<PIECE_SIZE; i++){
+        for(int j=0; j<PIECE_SIZE; j++){
+            p->board[i][j] = '.';
+
+        }
+    }
 }
 
 void print_piece(Piece p){
@@ -15,11 +21,25 @@ void print_piece(Piece p){
 }
 
 void rotate_clockwise(Piece *p){
-    // ToDo in LAB 1
+    Piece temporal;
+    init_piece(&temporal);
+    for(int c=0; c<PIECE_SIZE; c++){
+        for(int r=0; r<PIECE_SIZE; r++){
+            temporal.board[c][p->rows-1-r] = p->board[r][c];
+        }
+    }
+    *p=temporal;
 }
 
 void rotate_counter_clockwise(Piece *p){
-    // ToDo in LAB 1
+    Piece temporal;
+    init_piece(&temporal);
+    for(int c=0; c<PIECE_SIZE; c++){
+        for(int r=0; r<PIECE_SIZE; r++){
+            temporal.board[r][c] = p->board[p->rows-1-c][r];
+        }
+    }
+    *p=temporal;
 }
 
 Piece make_O(){

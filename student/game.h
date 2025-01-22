@@ -2,17 +2,25 @@
 #define _GAME_H_
 
 #include "common.h"
-#include "utils.h"
 #include "pieces.h"
+#include "utils.h"
 
 /// ToDo in LAB 1 - define macros MAX_ROWS and MAX_COLUMNS
-
-typedef struct{
-    // ToDo in LAB 1 - define data structure
+#define MAX_ROWS 15
+#define MAX_COLUMNS 9
+typedef struct {
+  // ToDo in LAB 1 - define data structure
+  Piece p;
+  int at_row;
+  int at_col;
 } PieceInfo;
 
-typedef struct{
-    // ToDo in LAB 1 - define data structure
+typedef struct {
+  int score;
+  char board[MAX_ROWS][MAX_COLUMNS];
+  PieceInfo curent_piece;
+
+  // ToDo in LAB 1 - define data structure
 } GameState;
 
 /// Implemented functions
@@ -27,14 +35,14 @@ bool is_collision(char board[MAX_ROWS][MAX_COLUMNS], PieceInfo *piece_info);
 
 /**** LAB 1 - functions to program (start here) ****/
 void init_game_state(GameState *game_state);
-bool is_terminal(char board[MAX_ROWS][MAX_COLUMNS]); // True if contains X values in TOP-4 rows
+bool is_terminal(char board[MAX_ROWS][MAX_COLUMNS]);  // True if contains X
+                                                      // values in TOP-4 rows
 void move(char board[MAX_ROWS][MAX_COLUMNS], PieceInfo *piece_info, int option);
-void rotate(char board[MAX_ROWS][MAX_COLUMNS], PieceInfo *piece_info, int option);
+void rotate(char board[MAX_ROWS][MAX_COLUMNS], PieceInfo *piece_info,
+            int option);
 /**** LAB 1 - functions to program (end here) ****/
 
 /// Implemented functions
 void run_turn(GameState *game_state, int option);
 
-
 #endif
-

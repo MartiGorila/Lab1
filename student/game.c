@@ -148,30 +148,59 @@ int remove_completed_lines(char board[MAX_ROWS][MAX_COLUMNS]){
 /********************************************************/
 
 void init_game_state(GameState *game_state){
-    // ToDo in LAB 1
-}
-
+    game_state->score = 0;
+  for (int r = 0; r < MAX_ROWS; r++){
+    for (int c = 0; c < MAX_COLUMNS; c++){
+      game_state->board[r][c] = '.';
+    }
+  }
+  get_new_random_piece(&game_state->current_piece);
+};
 
 bool is_terminal(char board[MAX_ROWS][MAX_COLUMNS]){
-    // ToDo in LAB 1
-    return false;
-}
-
+    for (int i = 0; i < 4; i++){
+    for (int j = 0; j<MAX_COLUMNS; j++){
+      if (board[i][j]== 'X'){
+        return true;
+      }
+    }
+  }
+  return false;
+};  
 
 void move_piece(char board[MAX_ROWS][MAX_COLUMNS], PieceInfo *piece_info, int option){
-    // ToDo in LAB 1
-}
+    int dir = 0;
+    if (option == MOVE_LEFT) dir = -1;
+    else if (option == MOVE_RIGHT) dir = 1;
+    else {printf("[ERROR] Invalid move option %d.\n", option); 
+    return; }
+
+    int new_col = piece_info -> at_col + dir;
+    if (new_col >= 0 && new_col<MAX_COLUMNS && board[piece_info->at_row][new_col] == '.'){
+        piece_info->at_col = new_col;
+    }
+    else {
+        printf("[ERROR] Collision or out of bounds. \n");
+    }
+    
+};
 
 void rotate_piece(char board[MAX_ROWS][MAX_COLUMNS], PieceInfo *piece_info, int option){
-    // ToDo in LAB 1
-}
+   if (option == ROTATE_CW) rotate_clockwise(&(piece_info->p));
+   else if(option == ROTATE_CCW) rotate_counter_clockwise(&(piece_info->p));
+   else {printf("[ERROR] Invalid rotation option %d. \n", option); }
+   if (is_collision(board, piece_info->p, piece_info->at_row, piece_info->at_col)){
+        if (option == ROTATE_CW){
+            rotate_counter_clockwise(&(piece_info->p));
+        }
+        else if (option == ROTATE_CCW) {
+            rotate_clockwise(&(piece_info->p));
+        }
+    }
+};
 /********************************************************/
 /******* LAB 1 - functions to program (end here) ********/
 /********************************************************/
-
-
-
-
 
 void run_turn(GameState *game_state, int option){
 	PieceInfo *p_inf = &(game_state->current_piece);

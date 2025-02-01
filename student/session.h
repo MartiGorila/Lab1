@@ -5,7 +5,8 @@
 
 /// LAB 1 - data structure
 typedef struct{
-    // ToDo in LAB 1 - define data structure
+    int best_score;
+    GameState game_state;
 } Session;
 
 /// LAB 1 - functions 

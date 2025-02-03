@@ -151,7 +151,7 @@ void init_game_state(GameState *game_state) {
       game_state->board[r][c] = '.';
     }
   }
-  get_new_random_piece(&game_state->current_piece);
+  get_new_random_piece(game_state);
 };  // starts the game
 
 bool is_terminal(char board[MAX_ROWS][MAX_COLUMNS]) {

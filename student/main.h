@@ -2,9 +2,10 @@
 #define _MAIN_H_
 
 #include "common.h"
-#include "utils.h"
 #include "game.h"
+#include "pieces.h"
 #include "session.h"
+#include "utils.h"
 
 void run_game(Session *session);
 
@@ -20,4 +21,4 @@ void print_menu();
 
 void run(Session *session);
 
-#endif 
+#endif

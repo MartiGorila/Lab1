@@ -1,0 +1,1 @@
+Use gcc main.c pieces.c game.c session.c utils.c -o myprogram to RUN

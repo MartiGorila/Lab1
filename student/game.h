@@ -32,12 +32,12 @@ void print_line();
 void print_board(GameState *game_state);
 void get_new_random_piece(GameState *game_state);
 void block_current_piece(GameState *game_state);
-bool is_collision(char **board, PieceInfo *piece_info);
+bool is_collision(GameState *gs);
 
 /**** LAB 1 - functions to program (start here) ****/
 void init_game_state(GameState *game_state);
 
-bool is_terminal(char **board);  // True if contains X
+bool is_terminal(GameState *gs);  // True if contains X
 
 // values in TOP-4 rows
 void move_piece(char **board, PieceInfo *piece_info, int option);

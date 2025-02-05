@@ -94,6 +94,7 @@ void run(Session *session) {
         resume_game(session);
         break;
       case EXIT:
+
         break;
     }
   } while (option != EXIT);

@@ -6,8 +6,8 @@
 #include "utils.h"
 
 /// ToDo in LAB 1 - define macros MAX_ROWS and MAX_COLUMNS  DONE
-#define MAX_ROWS 15
-#define MAX_COLUMNS 9
+#define MIN_ROWS 8
+#define MIN_COLUMNS 5
 typedef struct {
   // ToDo in LAB 1 - define data structure DONE
   Piece p;
@@ -17,9 +17,10 @@ typedef struct {
 
 typedef struct GameState {
   int score;
-  char board[MAX_ROWS][MAX_COLUMNS];
+  char **board;
   PieceInfo current_piece;
-
+  int rows;
+  int columns;
   // ToDo in LAB 1 - define data structure DONE
 } GameState;
 
@@ -31,19 +32,17 @@ void print_line();
 void print_board(GameState *game_state);
 void get_new_random_piece(GameState *game_state);
 void block_current_piece(GameState *game_state);
-bool is_collision(char board[MAX_ROWS][MAX_COLUMNS], PieceInfo *piece_info);
+bool is_collision(char **board, PieceInfo *piece_info);
 
 /**** LAB 1 - functions to program (start here) ****/
 void init_game_state(GameState *game_state);
 
-bool is_terminal(char board[MAX_ROWS][MAX_COLUMNS]);  // True if contains X
+bool is_terminal(char **board);  // True if contains X
 
 // values in TOP-4 rows
-void move_piece(char board[MAX_ROWS][MAX_COLUMNS], PieceInfo *piece_info,
-                int option);
+void move_piece(char **board, PieceInfo *piece_info, int option);
 
-void rotate(char board[MAX_ROWS][MAX_COLUMNS], PieceInfo *piece_info,
-            int option);
+void rotate(char **board, PieceInfo *piece_info, int option);
 
 /**** LAB 1 - functions to program (end here) ****/
 

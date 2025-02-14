@@ -146,8 +146,8 @@ int remove_completed_lines(char **board) {
 
 void init_game_state(GameState *game_state) {
   game_state->score = 0;
-  for (int r = 0; r < MIN_ROWS; r++) {
-    for (int c = 0; c < MIN_COLUMNS; c++) {
+  for (int r = 0; r < game_state->rows; r++) {
+    for (int c = 0; c < game_state->columns; c++) {
       game_state->board[r][c] = '.';
     }
   }
@@ -156,7 +156,7 @@ void init_game_state(GameState *game_state) {
 
 bool is_terminal(GameState *gs) {
   for (int i = 0; i < 4; i++) {
-    for (int j = 0; j < MIN_COLUMNS; j++) {
+    for (int j = 0; j < gs->columns; j++) {
       if (gs->board[i][j] == 'X') {
         return true;
       }
@@ -194,7 +194,7 @@ void rotate_piece(char **board, PieceInfo *piece_info, int option,
   else {
     printf("[ERROR] Invalid rotation option %d. \n", option);
   }
-  if (is_collision(&game_state)) {
+  if (is_collision(game_state)) {
     if (option == ROTATE_CW) {
       rotate_counter_clockwise(&(piece_info->p));
     } else if (option == ROTATE_CCW) {
@@ -211,7 +211,7 @@ void run_turn(GameState *game_state, int option) {
   if (option == MOVE_LEFT || option == MOVE_RIGHT)
     move_piece(game_state->board, p_inf, option);
   else if (option == ROTATE_CW || option == ROTATE_CCW)
-    rotate_piece(game_state->board, p_inf, option, &game_state);
+    rotate_piece(game_state->board, p_inf, option, game_state);
   else if (option == NONE) {
   }  // do nothing
   else {
@@ -223,10 +223,10 @@ void run_turn(GameState *game_state, int option) {
   // the completed lines, aggregating them to the current score.
   // If it is not in a terminal state, add a new random piece to the board.
   p_inf->at_row++;
-  if (is_collision(&game_state)) {
+  if (is_collision(game_state)) {
     p_inf->at_row--;
     block_current_piece(game_state);
     game_state->score += remove_completed_lines(game_state->board);
-    if (!is_terminal(game_state->board)) get_new_random_piece(game_state);
+    if (!is_terminal(game_state)) get_new_random_piece(game_state);
   }
 }

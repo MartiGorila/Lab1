@@ -34,7 +34,7 @@ void print_board(GameState *game_state);
 void get_new_random_piece(GameState *game_state);
 void block_current_piece(GameState *game_state);
 bool is_collision(GameState *gs);
-
+void make_board(GameState *gs);
 /**** LAB 1 - functions to program (start here) ****/
 void init_game_state(GameState *game_state);
 void restart_game_state(GameState *gs);

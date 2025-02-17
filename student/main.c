@@ -48,67 +48,55 @@ void new_game(Session *session) {
 }
 
 void save_game(Session *session) {
-  char filename[100];
-  printf("Enter the Name to save the game: ");
-  scanf("%s", filename);
+  // ToDo in Lab 2
+  // 1. If no errors, open given filename in writing-mode
+    printf("Enter a filename: ");
+    char filename[MAX_STR_LENGTH];
+    read_filename(filename);
 
-  FILE *file = fopen(filename, "w");
-  if (file == NULL) {
-    fprintf(stderr, "Error opening file for writing: %s\n", filename);
-    return;
-  }
-
-  GameState *gs = &session->game_state;
-
-  // 1. Print the game score to the file
-  fprintf(file, "Score: %d\n", gs->score);
-  printf("Debug: Score written to file: %d\n", gs->score);  // Debug print
-  fflush(file);
-  // 2. Print the PieceInfo to the file
-  PieceInfo *piece = &gs->current_piece;
-  fprintf(file, "Current Piece Info:\n");
-  fprintf(file, "Position: %d %d\n", piece->at_row, piece->at_col);
-  fprintf(file, "Piece Name: %s\n", piece->p.name);
-  fprintf(file, "Piece Display:\n");
-  printf("Debug: Current Piece Info written to file:\n");     // Debug print
-  printf("Position: %d %d\n", piece->at_row, piece->at_col);  // Debug print
-  printf("Piece Name: %s\n", piece->p.name);                  // Debug print
-  printf("Piece Display:\n");                                 // Debug print
-  for (int i = 0; i < 4; i++) {
-    for (int j = 0; j < 4; j++) {
-      fputc(piece->p.board[i][j], file);
-      printf("%c", piece->p.board[i][j]);  // Debug print
+    FILE *file = fopen(filename, "w");
+    if (file == NULL)
+    {
+        printf("Error opening file %s in writing-mode\n", filename);
+        return;
     }
-    fputc('\n', file);
-    printf("\n");  // Debug print
-  }
 
-  // 3. Print the board to the file
-  fprintf(file, "Board Dimensions: %d %d\n", gs->rows, gs->columns);
-  fprintf(file, "Board Display:\n");
-  printf("Debug: Board Dimensions written to file: %d %d\n", gs->rows,
-         gs->columns);                                // Debug print
-  printf("Debug: Board Display written to file:\n");  // Debug print
-  for (int i = 0; i < gs->rows; i++) {
-    for (int j = 0; j < gs->columns; j++) {
-      fputc(gs->board[i][j], file);
-      printf("%c", gs->board[i][j]);  // Debug print
+    // 2. Print GameState to opened file
+    GameState *game_aux = &(session->current_game_state);
+    Piece *piece = &(game_aux->current_piece.p);
+    // Print score
+    fprintf(file, "Score: %d\n\n", game_aux->score);
+
+    // Print piece
+    fprintf(file, "PieceInfo:\n");
+    fprintf(file, "at_row: %d\n", game_aux->current_piece.at_row);
+    fprintf(file, "at_col: %d\n", game_aux->current_piece.at_col);
+    fprintf(file, "name: %c\n", piece->name);
+    fprintf(file, "rows: %d\n", piece->rows);
+    fprintf(file, "cols: %d\n", piece->cols);
+    for(int row=0; row<PIECE_SIZE; ++row){
+        for(int col=0; col<PIECE_SIZE; ++col){
+            fprintf(file, "%c", piece->board[row][col]);
+        }
+        fprintf(file, "\n");
     }
-    fputc('\n', file);
-    printf("\n");  // Debug print
-  }
+    fprintf(file, "\n");
 
-  fclose(file);  // Close the file to ensure all data is written
+    // Print board
+    fprintf(file, "Board:\n");
+    fprintf(file, "rows: %d\n", game_aux->rows);
+    fprintf(file, "cols: %d\n", game_aux->columns);
+    for (int row = 0; row < game_aux->rows; ++row){
+        for (int col = 0; col < game_aux->columns; ++col){
+            fprintf(file, "%c", game_aux->board[row][col]);
+        }
+        fprintf(file, "\n");
+    }
 
-  // Wait for user to press Enter
-  int ce;
-  while ((ce = getchar()) != '\n' && ce != EOF) {
-  }
-
-  // Wait for user to press Enter
-  printf("Press Enter to exit...");
-  getchar();
+    // 3. Close the file
+    fclose(file);
 }
+
 void load_game(Session *session) {
   char filename[100];
   // This si similar to the inverse of the save game but also initiating the

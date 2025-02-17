@@ -59,55 +59,31 @@ void save_game(Session *session) {
   }
 
   GameState *gs = &session->game_state;
-
-  // 1. Print the game score to the file
   fprintf(file, "Score: %d\n", gs->score);
-  printf("Debug: Score written to file: %d\n", gs->score);  // Debug print
-  fflush(file);
-  // 2. Print the PieceInfo to the file
   PieceInfo *piece = &gs->current_piece;
   fprintf(file, "Current Piece Info:\n");
   fprintf(file, "Position: %d %d\n", piece->at_row, piece->at_col);
-  fprintf(file, "Piece Name: %s\n", piece->p.name);
+  // fprintf(file, "Piece Name: %s\n", piece->p.name);
   fprintf(file, "Piece Display:\n");
-  printf("Debug: Current Piece Info written to file:\n");     // Debug print
-  printf("Position: %d %d\n", piece->at_row, piece->at_col);  // Debug print
-  printf("Piece Name: %s\n", piece->p.name);                  // Debug print
-  printf("Piece Display:\n");                                 // Debug print
+
   for (int i = 0; i < 4; i++) {
     for (int j = 0; j < 4; j++) {
       fputc(piece->p.board[i][j], file);
-      printf("%c", piece->p.board[i][j]);  // Debug print
+      printf("%c", piece->p.board[i][j]);
     }
     fputc('\n', file);
-    printf("\n");  // Debug print
+    printf("\n");
   }
-
-  // 3. Print the board to the file
   fprintf(file, "Board Dimensions: %d %d\n", gs->rows, gs->columns);
   fprintf(file, "Board Display:\n");
-  printf("Debug: Board Dimensions written to file: %d %d\n", gs->rows,
-         gs->columns);                                // Debug print
-  printf("Debug: Board Display written to file:\n");  // Debug print
   for (int i = 0; i < gs->rows; i++) {
     for (int j = 0; j < gs->columns; j++) {
       fputc(gs->board[i][j], file);
-      printf("%c", gs->board[i][j]);  // Debug print
     }
     fputc('\n', file);
-    printf("\n");  // Debug print
   }
 
-  fclose(file);  // Close the file to ensure all data is written
-
-  // Wait for user to press Enter
-  int ce;
-  while ((ce = getchar()) != '\n' && ce != EOF) {
-  }
-
-  // Wait for user to press Enter
-  printf("Press Enter to exit...");
-  getchar();
+  fclose(file);
 }
 void load_game(Session *session) {
   char filename[100];
@@ -127,7 +103,7 @@ void load_game(Session *session) {
   PieceInfo *piece = &gs->current_piece;
   fscanf(file, "Current Piece Info:\n");
   fscanf(file, "Position: %d %d\n", &piece->at_row, &piece->at_col);
-  fscanf(file, "Piece Name: %s\n", piece->p.name);
+  // fscanf(file, "Piece Name: %s\n", piece->p.name);
   fscanf(file, "Piece Display:\n");
   for (int i = 0; i < 4; i++) {
     for (int j = 0; j < 4; j++) {
@@ -198,4 +174,7 @@ int main() {
   Session session;
   init_session(&session);
   run(&session);
+  printf("Press Enter to exit...");
+  getchar();
+  return 0;
 }

@@ -19,7 +19,9 @@ void run_game(Session *session) {
     } while (!is_valid_option(game_option));
 
     // 3.a Quit game
-    if (game_option == QUIT_GAME) return;
+    if (game_option == QUIT_GAME) {
+      free_game_state(game_state);
+    }
     // 3.b Show best move
     if (game_option == SHOW_BEST_MOVE) {
       // ToDo in Lab 3
@@ -46,16 +48,83 @@ void new_game(Session *session) {
 }
 
 void save_game(Session *session) {
-  // ToDo in Lab 2
+  char filename[100];
+  printf("Enter the Name to save the game: ");
+  scanf("%s", filename);
+
+  FILE *file = fopen(filename, "w");
+  if (file == NULL) {
+    fprintf(stderr, "Error opening file for writing: %s\n", filename);
+    return;
+  }
+
+  GameState *gs = &session->game_state;
+
+  fprintf(file, "Score: %d\n", gs->score);
+  PieceInfo *piece = &gs->current_piece;
+  fprintf(file, "Current Piece Info:\n");
+  fprintf(file, "Position: %d %d\n", piece->at_row, piece->at_col);
+  fprintf(file, "Piece Name: %s\n", piece->p.name);
+  fprintf(file, "Piece Display:\n");
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      fputc(piece->p.board[i][j], file);
+    }
+    fputc('\n', file);
+  }
+  fprintf(file, "Board Dimensions: %d %d\n", gs->rows, gs->columns);
+  fprintf(file, "Board Display:\n");
+  for (int i = 0; i < gs->rows; i++) {
+    for (int j = 0; j < gs->columns; j++) {
+      fputc(gs->board[i][j], file);
+    }
+    fputc('\n', file);
+  }
+  fclose(file);
+  printf("Game state saved to file: %s\n", filename);
 }
 
 void load_game(Session *session) {
-  // ToDo in Lab 2
+  char filename[100];
+  // This si similar to the inverse of the save game but also initiating the
+  // game
+  printf("Enter the filename to load the game: ");
+  scanf("%s", filename);
+
+  FILE *file = fopen(filename, "r");
+  if (file == NULL) {
+    fprintf(stderr, "Error opening file for reading: %s\n", filename);
+    return;
+  }
+
+  GameState *gs = &session->game_state;
+  fscanf(file, "Score: %d\n", &gs->score);
+  PieceInfo *piece = &gs->current_piece;
+  fscanf(file, "Current Piece Info:\n");
+  fscanf(file, "Position: %d %d\n", &piece->at_row, &piece->at_col);
+  fscanf(file, "Piece Name: %s\n", piece->p.name);
+  fscanf(file, "Piece Display:\n");
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      piece->p.board[i][j] = fgetc(file);
+    }
+    fgetc(file);
+  }
+
+  fscanf(file, "Board Dimensions: %d %d\n", &gs->rows, &gs->columns);
+  make_board(gs);
+  fscanf(file, "Board Display:\n");
+  for (int i = 0; i < gs->rows; i++) {
+    for (int j = 0; j < gs->columns; j++) {
+      gs->board[i][j] = fgetc(file);
+    }
+    fgetc(file);
+  }
+  fclose(file);
+  printf("Game state loaded succesfully at: %s\n", filename);
 }
 
-void resume_game(Session *session) {
-  // ToDo in Lab 2
-}
+void resume_game(Session *session) { run_game(session); }
 
 void print_menu() {
   printf("Menu options:\n");

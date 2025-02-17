@@ -25,6 +25,7 @@ typedef struct GameState {
 } GameState;
 
 /// Implemented functions
+void free_game_state(GameState *gs);
 void print_game_state(GameState *gs);
 void print_options();
 bool is_valid_option(int option);
@@ -36,13 +37,14 @@ bool is_collision(GameState *gs);
 
 /**** LAB 1 - functions to program (start here) ****/
 void init_game_state(GameState *game_state);
-
+void restart_game_state(GameState *gs);
+void set_default_game_state(GameState *gs);
 bool is_terminal(GameState *gs);  // True if contains X
 
 // values in TOP-4 rows
-void move_piece(char **board, PieceInfo *piece_info, int option);
+void move_piece(GameState *gs, int option);
 
-void rotate(char **board, PieceInfo *piece_info, int option);
+void rotate(GameState *gs, int option);
 
 /**** LAB 1 - functions to program (end here) ****/
 

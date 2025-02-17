@@ -144,14 +144,35 @@ int remove_completed_lines(char **board) {
 /******* LAB 1 - functions to program (start here) ******/
 /********************************************************/
 
-void init_game_state(GameState *game_state) {
-  game_state->score = 0;
-  for (int r = 0; r < game_state->rows; r++) {
-    for (int c = 0; c < game_state->columns; c++) {
-      game_state->board[r][c] = '.';
+void make_board(GameState *gs) {
+  gs->board = (char **)malloc(gs->rows * sizeof(char *));
+  if (gs->board == NULL) {
+    fprintf(stderr, "Memory allocation failed\n");
+    exit(1);
+  }
+  for (int i = 0; i < gs->rows; i++) {
+    gs->board[i] = (char *)malloc(gs->columns * sizeof(char));
+    if (gs->board[i] == NULL) {
+      fprintf(stderr, "Memory allocation failed\n");
+      exit(1);
     }
   }
-  get_new_random_piece(game_state);
+}
+void free_game_state(GameState *gs) {
+  if (gs->board != NULL) {
+    for (int i = 0; i < gs->rows; i++) {
+      free(gs->board[i]);
+    }
+    free(gs->board);
+    gs->board = NULL;
+  }
+}
+void init_game_state(GameState *game_state) {
+  game_state->board = NULL;
+  game_state->rows = MIN_ROWS;
+  game_state->columns = MIN_COLUMNS;
+  make_board(game_state);
+  set_default_game_state(game_state);
 };  // starts the game
 
 bool is_terminal(GameState *gs) {
@@ -164,8 +185,42 @@ bool is_terminal(GameState *gs) {
   }
   return false;
 };
+void restart_game_state(GameState *gs) {
+  int rows, columns;
 
-void move_piece(char **board, PieceInfo *piece_info, int option) {
+  printf("Enter the number of rows (greater than %d): ", MIN_ROWS);
+  scanf("%d", &rows);
+  while (rows < MIN_ROWS) {
+    printf(
+        "Number of rows should be greater than or equal to %d. Please enter "
+        "again: ",
+        MIN_ROWS);
+    scanf("%d", &rows);
+  }
+
+  printf("Enter the number of columns (greater than %d): ", MIN_COLUMNS);
+  scanf("%d", &columns);
+  while (columns < MIN_COLUMNS) {
+    printf(
+        "Number of columns should be greater than or equal to %d. Please enter "
+        "again: ",
+        MIN_COLUMNS);
+    scanf("%d", &columns);
+  }
+
+  make_board(gs);
+  set_default_game_state(gs);
+};
+void set_default_game_state(GameState *gs) {
+  gs->score = 0;
+  for (int r = 0; r < gs->rows; r++) {
+    for (int c = 0; c < gs->columns; c++) {
+      gs->board[r][c] = '.';
+    }
+  }
+  get_new_random_piece(gs);
+};
+void move_piece(GameState *gs, int option) {
   int dir = 0;
   if (option == MOVE_LEFT)
     dir = -1;
@@ -176,42 +231,42 @@ void move_piece(char **board, PieceInfo *piece_info, int option) {
     return;
   }
 
-  int new_col = piece_info->at_col + dir;
+  int new_col = gs->current_piece.at_col + dir;
   if (new_col >= 0 && new_col < MIN_COLUMNS &&
-      board[piece_info->at_row][new_col] == '.') {
-    piece_info->at_col = new_col;
+      gs->board[gs->current_piece.at_row][new_col] == '.') {
+    gs->current_piece.at_col = new_col;
   } else {
     printf("[ERROR] Collision or out of bounds. \n");
   }
 };  // Move the piece left and right check for screen limit(columns)
 
-void rotate_piece(char **board, PieceInfo *piece_info, int option,
-                  GameState *game_state) {
+void rotate_piece(GameState *game_state, int option) {
   if (option == ROTATE_CW)
-    rotate_clockwise(&(piece_info->p));
+    rotate_clockwise(&(game_state->current_piece.p));
   else if (option == ROTATE_CCW)
-    rotate_counter_clockwise(&(piece_info->p));
+    rotate_counter_clockwise(&(game_state->current_piece.p));
   else {
     printf("[ERROR] Invalid rotation option %d. \n", option);
   }
   if (is_collision(game_state)) {
     if (option == ROTATE_CW) {
-      rotate_counter_clockwise(&(piece_info->p));
+      rotate_counter_clockwise(&(game_state->current_piece.p));
     } else if (option == ROTATE_CCW) {
-      rotate_clockwise(&(piece_info->p));
+      rotate_clockwise(&(game_state->current_piece.p));
     }
   }
 };  // Rotate pieces and check for aveliavility of the move
 /********************************************************/
 /******* LAB 1 - functions to program (end here) ********/
+
 /********************************************************/
 
 void run_turn(GameState *game_state, int option) {
   PieceInfo *p_inf = &(game_state->current_piece);
   if (option == MOVE_LEFT || option == MOVE_RIGHT)
-    move_piece(game_state->board, p_inf, option);
+    move_piece(game_state, option);
   else if (option == ROTATE_CW || option == ROTATE_CCW)
-    rotate_piece(game_state->board, p_inf, option, game_state);
+    rotate_piece(game_state, option);
   else if (option == NONE) {
   }  // do nothing
   else {

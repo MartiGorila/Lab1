@@ -62,7 +62,7 @@ void save_game(Session *session) {
     }
 
     // 2. Print GameState to opened file
-    GameState *game_aux = &(session->current_game_state);
+    GameState *game_aux = &(session->game_state);
     Piece *piece = &(game_aux->current_piece.p);
     // Print score
     fprintf(file, "Score: %d\n\n", game_aux->score);

@@ -285,3 +285,63 @@ void run_turn(GameState *game_state, int option) {
     if (!is_terminal(game_state)) get_new_random_piece(game_state);
   }
 }
+
+GameState copy(GameState *game_state) { //Creates a copy of *game_state 
+    GameState new_game;
+    new_game.score = game_state->score;
+    new_game.rows = game_state->rows;
+    new_game.columns = game_state->columns;
+    new_game.current_piece = game_state->current_piece;
+
+    // Allocate memory for the new board
+    new_game.board = (char **)malloc(new_game.rows * sizeof(char *));
+    for (int r = 0; r < new_game.rows; r++) {
+        new_game.board[r] = (char *)malloc(new_game.columns * sizeof(char));
+        memmove(new_game.board[r], game_state->board[r], new_game.columns * sizeof(char));
+    }
+    return new_game;
+}
+
+int recursive_best_score(GameState *game_state, int depth) { 
+  // Simulates one turn for each possible option in the current *game_state
+    if (depth >= MAX_DEPTH || is_terminal(game_state)) {
+        return game_state->score;
+    }
+    
+    int best_score = game_state->score;
+    int moves[] = {MOVE_LEFT, MOVE_RIGHT, ROTATE_CW, ROTATE_CCW, NONE};
+
+    for (int i = 0; i < 5; i++) {
+        GameState copy_gs = copy(game_state);
+        run_turn(&copy_gs, moves[i]); // Simulate the move
+        int score = recursive_best_score(&copy_gs, depth + 1);
+        
+        if (score > best_score) {
+            best_score = score;
+        }
+        
+        free_game_state(&copy_gs); // Free allocated memory
+    }
+    return best_score;
+}
+
+int show_best_move(GameState *game_state) {
+  // Determines the best move possible according to the best score
+    int best_move = NONE;
+    int best_score = game_state->score;
+    int moves[] = {MOVE_LEFT, MOVE_RIGHT, ROTATE_CW, ROTATE_CCW, NONE};
+
+    for (int i = 0; i < 5; i++) {
+        GameState copy_gs = copy(game_state);
+        run_turn(&copy_gs, moves[i]);
+        int score = recursive_best_score(&copy_gs, 1);
+        
+        if (score > best_score) {
+            best_score = score;
+            best_move = moves[i];
+        }
+        
+        free_game_state(&copy_gs);
+    }
+    return best_move;
+}

@@ -185,6 +185,13 @@ bool is_terminal(GameState *gs) {
   }
   return false;
 };
+GameState copy(GameState *game_state) {
+  GameState gameStateCopy = *game_state;
+  make_board(&gameStateCopy);
+  return gameStateCopy;
+}
+int show_best_move(GameState *game_state) {}
+int recursive_best_score(GameState *game_state, int depth) {}
 void restart_game_state(GameState *gs) {
   int rows, columns;
 
@@ -261,7 +268,7 @@ void rotate_piece(GameState *game_state, int option) {
 
 /********************************************************/
 
-void run_turn(GameState *game_state, int option) {
+bool run_turn(GameState *game_state, int option) {
   PieceInfo *p_inf = &(game_state->current_piece);
   if (option == MOVE_LEFT || option == MOVE_RIGHT)
     move_piece(game_state, option);
@@ -281,7 +288,9 @@ void run_turn(GameState *game_state, int option) {
   if (is_collision(game_state)) {
     p_inf->at_row--;
     block_current_piece(game_state);
-    game_state->score += remove_completed_lines(game_state->board);
+    game_state->score += remove_completed_lines(game_state);
     if (!is_terminal(game_state)) get_new_random_piece(game_state);
+    return true;
   }
+  return false;
 }

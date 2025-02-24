@@ -8,6 +8,7 @@
 /// ToDo in LAB 1 - define macros MAX_ROWS and MAX_COLUMNS  DONE
 #define MIN_ROWS 8
 #define MIN_COLUMNS 5
+#define MAX_DEPTH 7
 typedef struct {
   // ToDo in LAB 1 - define data structure DONE
   Piece p;
@@ -50,5 +51,7 @@ void rotate(GameState *gs, int option);
 
 /// Implemented functions
 void run_turn(GameState *game_state, int option);
-
+GameState copy(GameState *game_state);
+int recursive_best_score(GameState *game_state, int depth);
+int show_best_move(GameState *game_state);
 #endif

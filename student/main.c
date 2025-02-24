@@ -25,6 +25,7 @@ void run_game(Session *session) {
     // 3.b Show best move
     if (game_option == SHOW_BEST_MOVE) {
       // ToDo in Lab 3
+      show_best_move(game_state);
       continue;
     }
 
@@ -94,7 +95,7 @@ void load_game(Session *session) {
 
   FILE *file = fopen(filename, "r");
   if (file == NULL) {
-    fprintf(stderr, "Error opening file for reading: %s\n", filename);
+    fprintf("Error opening file for reading: %s\n", filename);
     return;
   }
 

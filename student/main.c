@@ -25,7 +25,28 @@ void run_game(Session *session) {
     // 3.b Show best move
     if (game_option == SHOW_BEST_MOVE) {
       // ToDo in Lab 3
-      show_best_move(game_state);
+      printf("Calculating best move...\n");
+      int best_move = show_best_move(game_state);  // Get the best move
+      switch (best_move) {
+        case MOVE_LEFT:
+          printf("Best move: MOVE_LEFT\n");
+          break;
+        case MOVE_RIGHT:
+          printf("Best move: MOVE_RIGHT\n");
+          break;
+        case ROTATE_CW:
+          printf("Best move: ROTATE_CW\n");
+          break;
+        case ROTATE_CCW:
+          printf("Best move: ROTATE_CCW\n");
+          break;
+        case NONE:
+          printf("Best move: NONE\n");
+          break;
+        default:
+          printf("Invalid move\n");
+          break;
+      }
       continue;
     }
 
@@ -95,7 +116,7 @@ void load_game(Session *session) {
 
   FILE *file = fopen(filename, "r");
   if (file == NULL) {
-    fprintf("Error opening file for reading: %s\n", filename);
+    // fprintf("Error opening file for reading: %s\n", filename);
     return;
   }
 

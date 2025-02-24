@@ -50,7 +50,7 @@ void rotate(GameState *gs, int option);
 /**** LAB 1 - functions to program (end here) ****/
 
 /// Implemented functions
-void run_turn(GameState *game_state, int option);
+bool run_turn(GameState *game_state, int option);
 GameState copy(GameState *game_state);
 int recursive_best_score(GameState *game_state, int depth);
 int show_best_move(GameState *game_state);
